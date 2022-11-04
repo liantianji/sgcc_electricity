@@ -25,7 +25,7 @@ if [ ! $LOG_LEVEL ]; then
 fi
 
 if [ ! $HASS_URL ]; then
-    HASS_URL=`sed '/^HASS_URL = /!d;s/.* "//;s/"//' const.py`
+    HASS_URL=`sed '/^SUPERVISOR_URL = /!d;s/.* "//;s/"//' const.py`
 fi
 
 if [ ! $HASS_TOKEN ]; then
