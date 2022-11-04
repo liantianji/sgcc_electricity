@@ -23,12 +23,11 @@ class SensorUpdator:
                 "unit_of_measurement": sensorUnit
             }
         }
+        url = self.base_url + API_PATH + sensorName
 
         try:        
-            response = requests.post(self._urljoin(sensorName), json = request_body, headers = headers)
-            logging.info(f"Homeassistant REST API invoke, POST on {self.url + sensorName}. response[{response.status_code}]: {response.content}")
+            response = requests.post(url, json = request_body, headers = headers)
+            logging.info(f"Homeassistant REST API invoke, POST on {url}. response[{response.status_code}]: {response.content}")
         except:
             raise Exception("Sensor update failed, please check the network")
     
-    def _urljoin(self, sensorName: str):
-        return self.base_url + API_PATH + sensorName
