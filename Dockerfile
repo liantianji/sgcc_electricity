@@ -13,4 +13,6 @@ RUN cd /app \
 
 WORKDIR /app
 
+ENV TZ=Asia/Shanghai
+
 CMD ["./run.sh"]

@@ -34,7 +34,7 @@ class DataFetcher:
     
     def _fetch(self):
         driver = self._get_webdriver()
-        logging.info("Webdriver initalized.")
+        logging.info("Webdriver initialized.")
         try:
             self._login(driver)
             logging.info(f"Login successfully on {LOGIN_URL}" )

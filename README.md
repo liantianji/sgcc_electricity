@@ -57,10 +57,10 @@ __如果你是采用core, docker方式部署的home-assistant（也就是说你�
 
 ```shell
 cd sgcc_electricity
-docker build -t sgcc_electricity:1.0
-docker run -d sgcc/electricity -e PHONE_NUMBER="" -e PASSWORD="" -e HASS_URL="" -e HASS_TOKEN=""  
+docker build -t sgcc_electricity:1.0 .
+docker run -d -e PHONE_NUMBER="" -e PASSWORD="" -e HASS_URL="" -e HASS_TOKEN="" --restart unless-stopped sgcc/electricity:1.0 
 ```
-由于这个项目较大（docker image约1.17GB），build过程较慢，预计持续半小时左右（视网速、科学情况有所差异），先喝杯奶茶休息下再回来吧：）
+由于这个项目较大（docker image约1.17GB），build过程较慢，我在ubuntu上build了十多分钟
 
 部署container成功后稍等1分钟，你就可以在HA中找到sensor.last_electricity_usage与sensor.electricity_charge_balance这两个实体了。
 
@@ -72,14 +72,14 @@ __如果你宿主机是ubuntu，centos, debian等linux操作系统，底层C库�
 
 ```shell
 pip3 install selenium==4.5.0, schedule==1.1.0, ddddocr==1.4.7, undetected_webdriver==3.1.6
-apt-get install jq, chromium=90.0.4430-212-1~deb10u1 -y
+apt-get install jq chromium=90.0.4430.212-1~deb10u1 -y
 ```
 
 将文件解压后，执行python脚本即可。可根据需求自行将其设置为开机自启动或是跟随HA自启动。
 
 ```shell
 cd sgcc_electricity
-nohup python3 main.py PHONE_NUMBER PASSWORD HASS_URL HASS_TOKEN &
+nohup python3 main.py --PHONE_NUMBER= --PASSWORD= --HASS_URL= --HASS_TOKEN= &
 ```
 
 ## 其他
