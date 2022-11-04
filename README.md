@@ -1,4 +1,4 @@
-#sgcc_electricity
+# sgcc_electricity
 
 本应用可以帮助你将国网的电费、用电量数据接入HA，适用于除南方电网覆盖省外所有省份的用户。即除广东、广西、云南、贵州、海南等省份的用户外，均可使用本应用获取电力、电费数据。
 
@@ -33,7 +33,7 @@ template:
         unit_of_measurement: "KWH"
 ```
 
-##使用方法一：直接作为add-on接入
+## 使用方法一：直接作为add-on接入
 
 __如果你是采用supervised, HAOS方式部署的home-assistant（也就是说你部署了suppervisor, add-on等容器），可以使用local add-on的方式接入.__
 
@@ -47,7 +47,7 @@ __如果你是采用supervised, HAOS方式部署的home-assistant（也就是说
 
 
 
-##使用方法二：docker部署（TODO：modify and test）
+## 使用方法二：docker部署（TODO：modify and test）
 
 __如果你是采用core, docker方式部署的home-assistant（也就是说你没有部署suppervisor, add-on等容器），建议采用docker部署本应用。__
 
@@ -64,7 +64,7 @@ docker run -d sgcc/electricity -e PHONE_NUMBER="" -e PASSWORD="" -e HASS_URL="" 
 
 部署container成功后稍等1分钟，你就可以在HA中找到sensor.last_electricity_usage与sensor.electricity_charge_balance这两个实体了。
 
-##使用方法三：直接部署（TODO：modify and test）
+## 使用方法三：直接部署（TODO：modify and test）
 
 __如果你宿主机是ubuntu，centos, debian等linux操作系统，底层C库是glibc等manylinux tag可兼容的，你可以直接在宿主机上部署本应用（如果底层C库是musl（如alpine OS）, 需要先自行编译onnxruntime）__
 
@@ -82,7 +82,7 @@ cd sgcc_electricity
 nohup python3 main.py PHONE_NUMBER PASSWORD HASS_URL HASS_TOKEN &
 ```
 
-##其他
+## 其他
 
 如果你是以core的方式部署的HA，你还可以自己改改，搞一个自定义集成。大家可以按需自己整整。
 

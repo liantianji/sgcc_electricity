@@ -56,7 +56,7 @@ class DataFetcher:
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-gpu')
         chrome_options.add_argument('--disable-dev-shm-usage') 
-        driver = uc.Chrome(options = chrome_options, version_main=CHROMIUM_VERSION)
+        driver = uc.Chrome(options = chrome_options, version_main=CHROMIUM_MAIN_VERSION)
         driver.implicitly_wait(DRIVER_IMPLICITY_WAIT_TIME)
         return driver
 

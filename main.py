@@ -1,5 +1,5 @@
 from data_fetcher import DataFetcher
-import requests
+from sensor_updator import SensorUpdator
 import sys
 import logging
 import logging.config
@@ -7,56 +7,58 @@ import traceback
 from const import *
 import schedule
 import time
-import os
-
+import re
 
 def main():
-    logger_init()
+    args = argvs_parsor()
+    logger_init(args["log_level"])
     logging.info("Service start!")
 
-    phone_number = sys.argv[1]
-    password = sys.argv[2]
-    fetcher = DataFetcher(phone_number, password)
-    schedule.every().day.at(JOB_START_TIME).do(run_task, fetcher)
-    run_task(fetcher)
+    fetcher = DataFetcher(args["phone_number"], args["password"])
+    updator = SensorUpdator(args["hass_url"], args["hass_token"])
+    schedule.every().day.at(JOB_START_TIME).do(run_task, fetcher, updator)
+    # run_task(fetcher, updator)
     while True:
         schedule.run_pending()
         time.sleep(1)
 
-def run_task(data_fetcher: DataFetcher):
+def run_task(data_fetcher: DataFetcher, sensor_updator: SensorUpdator):
     try:
         balance, usage = data_fetcher.fetch()
-        update_sensor(BALANCE_SENSOR_NAME, balance, BALANCE_UNIT)
-        update_sensor(USAGE_SENSOR_NAME, usage, USAGE_UNIT)
+        sensor_updator.update(BALANCE_SENSOR_NAME, balance, BALANCE_UNIT,)
+        sensor_updator.update(USAGE_SENSOR_NAME, usage, USAGE_UNIT)
         logging.info("state-refresh task run successfully!")
     except Exception as e:
         logging.error(f"state-refresh task failed, reason is {e}")
         traceback.print_exc()
 
-def update_sensor(sensorName: str, sensorState:float, sensorUnit: str):
-        
-    supervisor_token = os.getenv("SUPERVISOR_TOKEN")
-    headers = {
-        "Content-Type": "application-json",
-        "Authorization": "Bearer " + supervisor_token 
 
+def argvs_parsor():
+    args = {
+    "phone_number": "",
+    "password":"",
+    "log_level":"INFO",
+    "hass_url":"",
+    "hass_token":""
     }
-    request_body = {
-        "state":sensorState,
-        "attributes": {
-            "unit_of_measurement": sensorUnit
-        }
-    }
-    try:        
-        response = requests.post(API_URL + sensorName, json = request_body, headers = headers)
-        logging.info(f"Homeassistant REST API invoke, POST on {API_URL + sensorName}. response[{response.status_code}]: {response.content}")
-    except:
-        raise Exception("Sensor update failed, please check the network")
+    pattern = r"--(.*)=(.*)"
+    
+    for arg in sys.argv[1:]:
+        match_result = re.match(pattern,arg)
+        if(None != match_result):
+            vars = match_result.groups()
+            key = vars[0].lower()
+            if(len(vars) == 2 and None != args[key]):
+                args[key] = vars[1]
 
+    for value in args.values():
+        if(len(value) == 0):
+            raise Exception("error occured when parsing args. Have you set all required environment variable?")
+    return args
 
-def logger_init():
+def logger_init(level: str):
     logger = logging.getLogger()
-    logger.setLevel(sys.argv[3])
+    logger.setLevel(level)
     logging.getLogger("urllib3").setLevel(logging.CRITICAL)
     format = logging.Formatter("%(asctime)s  [%(levelname)-8s] ---- %(message)s","%Y-%m-%d %H:%M:%S")
     sh = logging.StreamHandler(stream=sys.stdout) 
