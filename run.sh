@@ -1,28 +1,34 @@
+#!/bin/bash
 
 CONFIG_PATH=/data/options.json
 
-if [ ! $PHONE_NUMBER ]; then
+if [ ! $PHONE_NUMBER ] && [ -f $CONFIG_PATH ]; then
+    echo "test"
     PHONE_NUMBER=$(jq --raw-output '.phoneNumber' $CONFIG_PATH)
-    if [ null == $PHONE_NUMBER ]; then
-        echo "error! phoneNumber is null"
-        exit 1
-    fi
 fi
 
-if [ ! $PASSWORD ];then
+if [ ! $PHONE_NUMBER ] || [ null == $PHONE_NUMBER ]; then
+    echo "error! phoneNumber is null"
+    exit 1
+fi
+
+if [ ! $PASSWORD ] && [ -f $CONFIG_PATH ];then
     PASSWORD=$(jq --raw-output '.password' $CONFIG_PATH)
-    if [ null == $PASSWORD ]; then
-        echo "error! password is null"
-        exit 1
-    fi
 fi
 
-if [ ! $LOG_LEVEL ]; then
-    LOG_LEVEL=$(jq --raw-output '.logLevel' $CONFIG_PATH)
-    if [ null ==  $LOG_LEVEL ];then
-        LOG_LEVEL=INFO
-    fi
+if [ ! $PASSWORD ] || [ null == $PASSWORD ]; then
+    echo "error! password is null"
+    exit 1
 fi
+
+if [ ! $LOG_LEVEL ] && [ -f $CONFIG_PATH ]; then
+    LOG_LEVEL=$(jq --raw-output '.logLevel' $CONFIG_PATH)
+fi
+
+if [ ! $LOG_LEVEL ] || [ null == $LOG_LEVEL ];then
+    LOG_LEVEL=INFO
+fi
+
 
 if [ ! $HASS_URL ]; then
     HASS_URL=`sed '/^SUPERVISOR_URL = /!d;s/.* "//;s/"//' const.py`
