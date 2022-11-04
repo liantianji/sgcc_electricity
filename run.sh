@@ -3,7 +3,6 @@
 CONFIG_PATH=/data/options.json
 
 if [ ! $PHONE_NUMBER ] && [ -f $CONFIG_PATH ]; then
-    echo "test"
     PHONE_NUMBER=$(jq --raw-output '.phoneNumber' $CONFIG_PATH)
 fi
 
