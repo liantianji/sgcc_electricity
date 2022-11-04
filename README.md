@@ -1,8 +1,8 @@
 # sgcc_electricity
 
-本应用可以帮助你将国网的电费、用电量数据接入HA，适用于除南方电网覆盖省外所有省份的用户。即除广东、广西、云南、贵州、海南等省份的用户外，均可使用本应用获取电力、电费数据。
+本应用可以帮助你将国网的电费、用电量数据接入HA，适用于除南方电网覆盖省份外的用户。即除广东、广西、云南、贵州、海南等省份的用户外，均可使用本应用获取电力、电费数据。
 
-本应用在启动后和每天早上8点抓取数据，并更新HA里sensor.last_electricity_usage（更新的最近一天用电量，一般为前天）与sensor.electricity_charge_balance（电费余额）。
+本应用在启动后和每天早上8点抓取数据，并在HA里更新sensor.last_electricity_usage（最近一天用电量）与sensor.electricity_charge_balance（电费余额）。
 
 由于采用REST API方式创建sensor，没有做实体注册，无法在webui里编辑。如果需要，你可以在configuration.yaml下增加如下配置后重启HA，这样你就可在webUI编辑对应的实体了。
 
@@ -37,7 +37,7 @@ template:
 
 __如果你是采用supervised, HAOS方式部署的home-assistant（也就是说你部署了suppervisor, add-on等容器），可以使用local add-on的方式接入.__
 
-首先，你需要把文件copy到 /addons下并解压，文件结构be like /addons/sgcc_electricity/...(...即具体文件）
+首先，你需要把文件copy到 /addons下并解压，文件结构be like /addons/sgcc_electricity/...(...即具体文件）。
 
 然后在webUI上点击配置-》加载项-》加载项商店，这时你应该可以看到local下面的本add-on（没看到的话，加载项商店又上角点击检查更新，再不行你可以试试重启supervisor）。
 
@@ -46,8 +46,7 @@ __如果你是采用supervised, HAOS方式部署的home-assistant（也就是说
 安装好后，配置好用户名、密码，直接启动即可。稍等1分钟后，就可以在HA中找到sensor.last_electricity_usage与sensor.electricity_charge_balance这两个实体了。
 
 
-
-## 使用方法二：docker部署（TODO：modify and test）
+## 使用方法二：docker部署
 
 __如果你是采用core, docker方式部署的home-assistant（也就是说你没有部署suppervisor, add-on等容器），建议采用docker部署本应用。__
 
@@ -58,13 +57,13 @@ __如果你是采用core, docker方式部署的home-assistant（也就是说你�
 ```shell
 cd sgcc_electricity
 docker build -t sgcc_electricity:1.0 .
-docker run -d -e PHONE_NUMBER="" -e PASSWORD="" -e HASS_URL="" -e HASS_TOKEN="" --restart unless-stopped sgcc/electricity:1.0 
+docker run --name sgcc_electricity -d -e PHONE_NUMBER="" -e PASSWORD="" -e HASS_URL="" -e HASS_TOKEN="" --restart unless-stopped sgcc/electricity:1.0 
 ```
-由于这个项目较大（docker image约1.17GB），build过程较慢，我在ubuntu上build了十多分钟
+由于这个项目较大（docker image约1.17GB），build过程较慢，我在ubuntu上build了十多分钟。
 
 部署container成功后稍等1分钟，你就可以在HA中找到sensor.last_electricity_usage与sensor.electricity_charge_balance这两个实体了。
 
-## 使用方法三：直接部署（TODO：modify and test）
+## 使用方法三：直接部署
 
 __如果你宿主机是ubuntu，centos, debian等linux操作系统，底层C库是glibc等manylinux tag可兼容的，你可以直接在宿主机上部署本应用（如果底层C库是musl（如alpine OS）, 需要先自行编译onnxruntime）__
 
@@ -84,5 +83,5 @@ nohup python3 main.py --PHONE_NUMBER= --PASSWORD= --HASS_URL= --HASS_TOKEN= &
 
 ## 其他
 
-如果你是以core的方式部署的HA，你还可以自己改改，搞一个自定义集成。大家可以按需自己整整。
+如果你是以core的方式部署的HA，你还可以自己改改，搞一个自定义集成。
 
