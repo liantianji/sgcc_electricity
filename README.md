@@ -37,9 +37,14 @@ template:
 
 __如果你是采用supervised, HAOS方式部署的home-assistant（也就是说你部署了suppervisor, add-on等容器），可以使用local add-on的方式接入.__
 
-首先，你需要把文件copy到 /addons下并解压，文件结构be like /addons/sgcc_electricity/...(...即具体文件）。
+首先，进入HA实例终端，输入以下命令从git上clone仓库。
 
-然后进入/addons/sgcc_electricity/, 执行chmod 777 run.sh，确保赋予了可执行权限。
+```bash
+cd /addons
+git clone https://github.com/louisslee/sgcc_electricity.git
+cd sgcc_electricity
+chmod 777 run.sh
+```
 
 然后在webUI上点击配置-》加载项-》加载项商店，这时你应该可以看到local下面的本add-on（没看到的话，加载项商店又上角点击检查更新，再不行你可以试试重启supervisor）。
 
@@ -56,7 +61,8 @@ __如果你是采用core, docker方式部署的home-assistant（也就是说你�
 
 在宿主机上打开压缩包后，可输入如下命令执行docker构建、部署。
 
-```shell
+```bash
+git clone https://github.com/louisslee/sgcc_electricity.git
 cd sgcc_electricity
 chmod 777 run.sh
 docker build -t sgcc_electricity:1.0 .
@@ -72,7 +78,7 @@ __如果你宿主机是ubuntu，centos, debian等linux操作系统，底层C库�
 
 首先安装本项目依赖，可参考：
 
-```shell
+```bash
 pip3 install selenium==4.5.0, schedule==1.1.0, ddddocr==1.4.7, undetected_webdriver==3.1.6
 apt-get install jq chromium=90.0.4430.212-1~deb10u1 -y #chromium版本如果没有，可以选用系统上有的，并在const.py上修改chrom的版本，由90改成你安装的大版本。
 ```
@@ -86,5 +92,5 @@ nohup python3 main.py --PHONE_NUMBER= --PASSWORD= --HASS_URL= --HASS_TOKEN= &
 
 ## 其他
 
-如果你是以core的方式部署的HA，你可以自己改改，搞一个自定义集成。
+如果你是以core的方式部署的HA，你还可以自己改改，搞一个自定义集成。
 
