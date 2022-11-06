@@ -50,6 +50,8 @@ chmod 777 run.sh
 
 由于这个项目较大（docker image约1.17GB），build过程较慢，预计持续半小时左右（视网速、科学情况有所差异），先喝杯奶茶休息下再回来吧：）
 
+如果你想了解setup进度，可以在HA终端上输入docker container ls，复制第一个container的name，执行docker container attach {替换成container name},来查看安装进度。
+
 安装好后，配置好用户名、密码，直接启动即可。稍等1分钟后，就可以在HA中找到sensor.last_electricity_usage与sensor.electricity_charge_balance这两个实体了。
 
 
