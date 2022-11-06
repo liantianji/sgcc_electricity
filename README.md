@@ -86,5 +86,5 @@ nohup python3 main.py --PHONE_NUMBER= --PASSWORD= --HASS_URL= --HASS_TOKEN= &
 
 ## 其他
 
-如果你是以core的方式部署的HA，你还可以自己改改，搞一个自定义集成。
+如果你是以core的方式部署的HA，你可以自己改改，搞一个自定义集成。
 
