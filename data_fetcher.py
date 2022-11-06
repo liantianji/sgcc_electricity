@@ -7,6 +7,8 @@ import ddddocr
 import time
 import logging
 import traceback
+import subprocess
+import re
 from const import *
 
 
@@ -16,7 +18,9 @@ class DataFetcher:
 
         self._username = username
         self._password = password
-        self.ocr = ddddocr.DdddOcr(show_ad = False)
+        self._ocr = ddddocr.DdddOcr(show_ad = False)
+        self._chromium_version = self._get_chromium_version()
+
     
     def fetch(self):
         for retry_times in range(1, RETRY_TIMES_LIMIT + 1):
@@ -56,7 +60,7 @@ class DataFetcher:
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-gpu')
         chrome_options.add_argument('--disable-dev-shm-usage') 
-        driver = uc.Chrome(options = chrome_options, version_main=CHROMIUM_MAIN_VERSION)
+        driver = uc.Chrome(options = chrome_options, version_main = self._chromium_version)
         driver.implicitly_wait(DRIVER_IMPLICITY_WAIT_TIME)
         return driver
 
@@ -74,7 +78,7 @@ class DataFetcher:
 
             img_src = captcha_element.find_element(By.TAG_NAME,"img").get_attribute("src")
             img_base64 = img_src.replace("data:image/jpg;base64,","")
-            orc_result = str(self.ocr.classification(ddddocr.base64_to_image(img_base64)))
+            orc_result = str(self._ocr.classification(ddddocr.base64_to_image(img_base64)))
 
             if(not self._is_captcha_legal(orc_result)):
                 logging.debug(f"The captcha is illegal, which is caused by ddddocr, {RETRY_TIMES_LIMIT - retry_times} retry times left.")
@@ -116,3 +120,8 @@ class DataFetcher:
             if(not s.isalpha() and not s.isdigit()):
                 return False
         return True
+    
+    @staticmethod
+    def _get_chromium_version():
+        result = str(subprocess.check_output(["chromium", "--product-version"]))
+        return re.findall(r"(\d*)\.",result)[0]
