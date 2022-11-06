@@ -39,6 +39,8 @@ __如果你是采用supervised, HAOS方式部署的home-assistant（也就是说
 
 首先，你需要把文件copy到 /addons下并解压，文件结构be like /addons/sgcc_electricity/...(...即具体文件）。
 
+然后进入/addons/sgcc_electricity/, 执行chmod 777 run.sh，确保赋予了可执行权限。
+
 然后在webUI上点击配置-》加载项-》加载项商店，这时你应该可以看到local下面的本add-on（没看到的话，加载项商店又上角点击检查更新，再不行你可以试试重启supervisor）。
 
 由于这个项目较大（docker image约1.17GB），build过程较慢，预计持续半小时左右（视网速、科学情况有所差异），先喝杯奶茶休息下再回来吧：）
@@ -56,6 +58,7 @@ __如果你是采用core, docker方式部署的home-assistant（也就是说你�
 
 ```shell
 cd sgcc_electricity
+chmod 777 run.sh
 docker build -t sgcc_electricity:1.0 .
 docker run --name sgcc_electricity -d -e PHONE_NUMBER="" -e PASSWORD="" -e HASS_URL="" -e HASS_TOKEN="" --restart unless-stopped sgcc/electricity:1.0 
 ```
@@ -71,7 +74,7 @@ __如果你宿主机是ubuntu，centos, debian等linux操作系统，底层C库�
 
 ```shell
 pip3 install selenium==4.5.0, schedule==1.1.0, ddddocr==1.4.7, undetected_webdriver==3.1.6
-apt-get install jq chromium=90.0.4430.212-1~deb10u1 -y
+apt-get install jq chromium=90.0.4430.212-1~deb10u1 -y #chromium版本如果没有，可以选用系统上有的，并在const.py上修改chrom的版本，由90改成你安装的大版本。
 ```
 
 将文件解压后，执行python脚本即可。可根据需求自行将其设置为开机自启动或是跟随HA自启动。
